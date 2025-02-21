@@ -13,7 +13,7 @@ export default function Navbar() {
           {isOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
         <h1 className="text-2xl font-semibold tracking-wide">
-          Meta Sketch Agri
+          MetaSketch Agri
         </h1>
       </div>
       <ul className="hidden md:flex space-x-6 text-lg">

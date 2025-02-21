@@ -3,10 +3,15 @@ import { useState, ChangeEvent } from "react";
 import axios from "axios";
 import Image from "next/image";
 
+interface ApiResponse {
+  message?: string;
+  [key: string]: any; // To handle other possible properties
+}
+
 export default function ImageUpload() {
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-  const [result, setResult] = useState<string>("");
+  const [result, setResult] = useState<ApiResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -22,22 +27,25 @@ export default function ImageUpload() {
     setLoading(true);
 
     const formData = new FormData();
-    formData.append("file", image);
+    formData.append("image", image);
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/upload",
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-          withCredentials: true,
-        }
-      );
+      const response = await fetch("http://127.0.0.1:8081/analyze-image", {
+        method: "POST",
+        body: formData,
+      });
 
-      setResult(response.data.message);
+      if (!response.ok) {
+        console.log(response)
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("API Response:", data); // Log full response
+      setResult(data); // Store the full response
     } catch (error) {
       console.error("Error uploading image:", error);
-      setResult("Error analyzing image.");
+      setResult({ message: "Error analyzing image." });
     } finally {
       setLoading(false);
     }
@@ -67,7 +75,13 @@ export default function ImageUpload() {
         {loading ? "Analyzing..." : "Analyze Image"}
       </button>
 
-      {result && <p className="mt-4 font-bold">{result}</p>}
+      {result && (
+        <div className="mt-4 p-4 border rounded bg-gray-100 w-full max-w-5xl">
+          <p className="text-sm whitespace-pre-wrap break-words">
+            {result.response}
+          </p>
+        </div>
+      )}
     </div>
   );
 }
