@@ -5,8 +5,10 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col bg-gradient-to-b from-blue-900/90 via-blue-400/90 to-blue-200/90">
       <Navbar />
-      <h1 className="text-6xl text-white m-4">Image Upload</h1>
-      <ImageUpload />
+      <h1 className="text-6xl text-white m-4 text-center">Image Upload</h1>
+      <div className="flex justify-center">
+        <ImageUpload />
+      </div>
     </main>
   );
 }

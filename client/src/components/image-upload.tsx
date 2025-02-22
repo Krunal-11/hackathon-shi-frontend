@@ -1,11 +1,10 @@
 "use client";
 import { useState, ChangeEvent } from "react";
-import axios from "axios";
 import Image from "next/image";
 
 interface ApiResponse {
+  response?: string;
   message?: string;
-  [key: string]: any; // To handle other possible properties
 }
 
 export default function ImageUpload() {
@@ -36,13 +35,12 @@ export default function ImageUpload() {
       });
 
       if (!response.ok) {
-        console.log(response)
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
       const data = await response.json();
-      console.log("API Response:", data); // Log full response
-      setResult(data); // Store the full response
+      console.log("API Response:", data);
+      setResult(data);
     } catch (error) {
       console.error("Error uploading image:", error);
       setResult({ message: "Error analyzing image." });
@@ -77,9 +75,14 @@ export default function ImageUpload() {
 
       {result && (
         <div className="mt-4 p-4 border rounded bg-gray-100 w-full max-w-5xl">
-          <p className="text-sm whitespace-pre-wrap break-words">
-            {result.response}
-          </p>
+          {result.response ? (
+            <div
+              className="text-sm whitespace-pre-wrap break-words"
+              dangerouslySetInnerHTML={{ __html: result.response }}
+            />
+          ) : (
+            <p className="text-sm">{result.message}</p>
+          )}
         </div>
       )}
     </div>
