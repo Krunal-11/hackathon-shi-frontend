@@ -34,7 +34,7 @@ export default function Chat() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ user_input: message }),
+        body: JSON.stringify({ message: message }),
       });
 
       const data = await response.json(); // Get the bot's response
@@ -42,7 +42,6 @@ export default function Chat() {
       // Add bot message to chat
       const botMessage: ChatMessage = { sender: "bot", text: data.response }; // Assuming API returns { "response": "message text" }
       setChats((prevChats) => [...prevChats, botMessage]);
-
     } catch (error) {
       console.error("Error fetching chatbot response:", error);
       setChats((prevChats) => [
